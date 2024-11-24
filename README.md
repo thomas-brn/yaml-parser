@@ -1,20 +1,20 @@
-### Projet : Parseur YAML avec Automate à Pile
+# Projet : Parseur YAML avec Automate à Pile
 
-#### Description
+### Description
 
 Ce projet implémente un parseur pour le langage YAML en utilisant un automate à pile. Le parseur analyse un document YAML et détermine s'il est valide selon la grammaire définie.
 
-#### Structure du Projet
+### Structure du Projet
 
 - **parser.py** : Parseur syntaxique principal.
 - **tokenizer.py** : Analyseur lexical pour convertir le texte en tokens.
 - **examples/** : Contient des exemples de fichiers YAML (valides et invalides).
 
-#### Prérequis
+### Prérequis
 
 - Python 3.x
 
-#### Installation
+### Installation
 
 1. Cloner le dépôt :
 
@@ -28,7 +28,7 @@ Ce projet implémente un parseur pour le langage YAML en utilisant un automate �
    cd yaml_parser
    ```
 
-#### Utilisation
+### Utilisation
 
 1. Placer le fichier YAML à analyser dans le répertoire.
 
@@ -38,7 +38,7 @@ Ce projet implémente un parseur pour le langage YAML en utilisant un automate �
    python parser.py <fichier.yaml>
    ```
 
-#### Exemples
+### Exemples
 
 - Analyser un fichier valide :
 
