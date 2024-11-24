@@ -154,7 +154,7 @@ La grammaire suivante définit une version simplifiée du langage YAML, exprimé
 1. **Paire Clé-Valeur Simple :**
 
    ```yaml
-   nom: "Alice"
+   nom: "Jino"
    ```
 
    - `<clé_valeur>` avec `<clé>` = `nom` et `<valeur>` = `"Alice"`

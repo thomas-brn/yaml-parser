@@ -8,10 +8,10 @@ import re
 
 class Token:
     def __init__(self, type_, value, indent_level=0, line_number=0):
-        self.type = type_
-        self.value = value
-        self.indent_level = indent_level
-        self.line_number = line_number
+        self.type = type_ # Type du token (KEY, VALUE, DASH, COMMENT)
+        self.value = value # Valeur du token
+        self.indent_level = indent_level # Niveau d'indentation du token
+        self.line_number = line_number # Numéro de ligne du token
 
     def __repr__(self):
         return f"Token(type={self.type}, value={self.value}, indent_level={self.indent_level}, line={self.line_number})"
