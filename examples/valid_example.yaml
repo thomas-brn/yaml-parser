@@ -1,0 +1,11 @@
+# Ceci est un commentaire
+nom: "Jean Dupont"
+âge: 30
+intérêts:
+  - Programmation
+  - Lecture
+  - Musique
+adresse:
+  rue: "123 Rue Principale"
+  ville: "Paris"
+  code_postal: 75000
