@@ -1,10 +1,10 @@
-nom "Jean Dupont"
-âge: trente
-intérêts
-  - Programmation
-  - Lecture
-    - Musique
-adresse:
-  rue "123 Rue Principale"
-  ville: "Paris"
-  code_postal: 75000
+name "John Doe"
+age: thirty
+interests
+  - Programming
+  - Reading
+    - Music
+address:
+  street "123 Main Street"
+  city: "Paris"
+  postal_code: 75000

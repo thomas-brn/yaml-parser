@@ -1,77 +1,78 @@
-# Ce fichier contient le code pour le parseur, qui analyse la structure d'un document YAML à partir de la liste de tokens générée par le tokenizer.
+# This file contains the parser code. It analyzes the structure of a YAML
+# document from the token list produced by the tokenizer.
 
 from tokenizer import tokenize, Token
 
 class Parser:
     def __init__(self, tokens):
-        self.tokens = tokens  # Liste des tokens à analyser
-        self.current = 0  # Index du token actuel
-        self.success = True  # Indicateur de succès de l'analyse
+        self.tokens = tokens  # List of tokens to parse
+        self.current = 0  # Current token index
+        self.success = True  # Parsing success flag
 
     def parse(self):
         try:
             while self.current < len(self.tokens):
-                self.element()  # Analyse chaque élément
-            return True  # Retourne True si l'analyse est réussie
+                self.element()  # Parse each top-level element
+            return True  # Return True when parsing succeeds
         except Exception as e:
-            print(f"Parsing error: {e}")  # Affiche l'erreur de parsing
-            return False  # Retourne False si une erreur est rencontrée
+            print(f"Parsing error: {e}")  # Display parsing error
+            return False  # Return False when an error is found
 
     def element(self):
-        token = self.tokens[self.current]  # Récupère le token actuel
+        token = self.tokens[self.current]  # Get current token
         if token.type == 'COMMENT':
-            self.current += 1  # Ignore les commentaires
+            self.current += 1  # Ignore comments
         elif token.type == 'KEY':
-            self.mapping()  # Analyse une paire clé-valeur
+            self.mapping()  # Parse a key-value pair
         elif token.type == 'DASH':
-            self.sequence()  # Analyse un élément de séquence
+            self.sequence()  # Parse a sequence item
         elif token.type == 'VALUE':
-            self.current += 1  # Ignore les valeurs scalaires seules
+            self.current += 1  # Ignore standalone scalar values
         else:
-            raise Exception(f"Unexpected token {token}")  # Lève une exception pour un token inattendu
+            raise Exception(f"Unexpected token {token}")  # Raise on unknown token
 
-    # Analyse une paire clé-valeur
-    # Une paire clé-valeur est composée d'une clé (KEY) et d'une valeur associée (VALUE)
-    # Elle peut également contenir des mappings ou des séquences imbriqués
+    # Parse a key-value pair.
+    # A pair is composed of a key (KEY) and an optional associated value (VALUE).
+    # It may also contain nested mappings or sequences.
     def mapping(self):
         token = self.tokens[self.current]
-        indent_level = token.indent_level  # Niveau d'indentation de la clé
-        self.current += 1  # Passe au token suivant (après la clé)
-        # Vérifie s'il y a une valeur associée à la clé
+        indent_level = token.indent_level  # Key indentation level
+        self.current += 1  # Move to next token (after key)
+        # Check whether there is an associated value
         if self.current < len(self.tokens) and self.tokens[self.current].type == 'VALUE':
-            self.current += 1  # Passe au token suivant (après la valeur)
-        # Vérifie les mappings ou séquences imbriqués
+            self.current += 1  # Move to next token (after value)
+        # Parse nested mappings or sequences
         while self.current < len(self.tokens) and self.tokens[self.current].indent_level > indent_level:
-            self.element()  # Analyse les éléments imbriqués
+            self.element()  # Parse nested elements
 
-    # Analyse un élément de séquence
-    # Un élément de séquence commence par un tiret (-) suivi d'une valeur associée (VALUE)
-    # Il peut également contenir des mappings ou des séquences imbriqués
+    # Parse a sequence item.
+    # A sequence item starts with a dash (-) and may have an associated value (VALUE).
+    # It may also contain nested mappings or sequences.
     def sequence(self):
         token = self.tokens[self.current]
-        indent_level = token.indent_level  # Niveau d'indentation de l'élément de séquence
-        self.current += 1  # Passe au token suivant (après le tiret)
-        # Vérifie s'il y a une valeur associée à l'élément de séquence
+        indent_level = token.indent_level  # Sequence item indentation level
+        self.current += 1  # Move to next token (after dash)
+        # Check whether there is an associated value
         if self.current < len(self.tokens) and self.tokens[self.current].type == 'VALUE':
-            self.current += 1  # Passe au token suivant (après la valeur)
-        # Vérifie les éléments imbriqués
+            self.current += 1  # Move to next token (after value)
+        # Parse nested elements
         while self.current < len(self.tokens) and self.tokens[self.current].indent_level > indent_level:
-            self.element()  # Analyse les éléments imbriqués
+            self.element()  # Parse nested elements
 
-# Utilisation du parseur
+# Parser entry point
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python parser.py <fichier_yaml>")
+        print("Usage: python parser.py <yaml_file>")
         sys.exit(1)
 
     with open(sys.argv[1], 'r') as f:
         input_text = f.read()
 
-    tokens = tokenize(input_text)  # Tokenize le texte d'entrée
-    parser = Parser(tokens)  # Crée une instance du parseur avec les tokens
-    result = parser.parse()  # Analyse les tokens
+    tokens = tokenize(input_text)  # Tokenize input text
+    parser = Parser(tokens)  # Create parser with tokens
+    result = parser.parse()  # Parse token stream
     if result:
-        print("Le document YAML est valide.")  # Affiche un message si le document est valide
+        print("The YAML document is valid.")  # Success message
     else:
-        print("Le document YAML n'est pas valide.")  # Affiche un message si le document n'est pas valide
+        print("The YAML document is not valid.")  # Failure message

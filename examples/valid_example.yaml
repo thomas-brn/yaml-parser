@@ -1,11 +1,11 @@
-# Ceci est un commentaire
-nom: "Jean Dupont"
-âge: 30
-intérêts:
-  - Programmation
-  - Lecture
-  - Musique
-adresse:
-  rue: "123 Rue Principale"
-  ville: "Paris"
-  code_postal: 75000
+# This is a comment
+name: "John Doe"
+age: 30
+interests:
+  - Programming
+  - Reading
+  - Music
+address:
+  street: "123 Main Street"
+  city: "Paris"
+  postal_code: 75000

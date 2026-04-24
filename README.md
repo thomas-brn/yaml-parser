@@ -1,191 +1,144 @@
-# Projet : Parseur YAML avec Automate à Pile
+# YAML Parser (Pushdown Automaton Approach)
 
-### Description
+## Overview
 
-Ce projet implémente un parseur pour le langage YAML en utilisant un automate à pile. Le parseur analyse un document YAML et détermine s'il est valide selon la grammaire définie.
+This project implements a simplified YAML parser using a tokenizer + parser pipeline.
+It reads a YAML file, tokenizes it, and validates whether the document matches the
+supported grammar.
 
-### Structure du Projet
+## Features
 
-- **parser.py** : Parseur syntaxique principal.
-- **tokenizer.py** : Analyseur lexical pour convertir le texte en tokens.
-- **examples/** : Contient des exemples de fichiers YAML (valides et invalides).
+- Lexical analysis for comments, keys, scalar values, and sequence markers.
+- Indentation-based parsing for nested mappings and sequences.
+- Clear success/failure feedback from the command line.
+- Example files for valid and invalid inputs.
 
-### Prérequis
+## Project Structure
 
-- Python 3.x
+- `parser.py`: Main syntax parser.
+- `tokenizer.py`: Lexer that converts input text into tokens.
+- `examples/`: Example YAML files used for manual testing.
 
-### Installation
+## Requirements
 
-1. Cloner le dépôt :
+- Python 3.8+ (tested with Python 3.x)
 
-   ```bash
-   git clone https://github.com/thomas-brn/yaml_parser
-   ```
+## Installation
 
-2. Naviguer dans le répertoire :
+```bash
+git clone https://github.com/thomas-brn/yaml_parser
+cd yaml_parser
+```
 
-   ```bash
-   cd yaml_parser
-   ```
+## Usage
 
-### Utilisation
+Run the parser on a YAML file:
 
-1. Placer le fichier YAML à analyser dans le répertoire.
+```bash
+python3 parser.py <file.yaml>
+```
 
-2. Exécuter le parseur :
+Examples:
 
-   ```bash
-   python parser.py <fichier.yaml>
-   ```
+```bash
+python3 parser.py examples/valid_example.yaml
+python3 parser.py examples/invalid_example.yaml
+```
 
-### Exemples
+## Supported Grammar (Simplified YAML)
 
-- Analyser un fichier valide :
-
-  ```bash
-  python parser.py examples/valid_example.yaml
-  ```
-
-- Analyser un fichier invalide :
-
-  ```bash
-  python parser.py examples/invalid_example.yaml
-  ```
-
-## Grammaire du Langage YAML
-
-La grammaire suivante définit une version simplifiée du langage YAML, exprimée en utilisant la **Forme de Backus-Naur étendue (EBNF)**. Cette grammaire sert de base pour le parseur implémenté dans le projet.
+The parser is based on a simplified YAML grammar expressed in EBNF:
 
 ```ebnf
-<document> ::= (<élément>)*
+<document> ::= (<element>)*
 
-<élément> ::= <commentaire>
-            | <clé_valeur>
-            | <séquence>
+<element> ::= <comment>
+            | <key_value>
+            | <sequence>
             | <mapping>
 
-<commentaire> ::= '#' <texte> '\n'
+<comment> ::= '#' <text> '\n'
 
-<clé_valeur> ::= <indentation> <clé> ':' <espace>? <valeur>? '\n'
+<key_value> ::= <indentation> <key> ':' <space>? <value>? '\n'
 
-<clé> ::= <scalair>
+<key> ::= <scalar>
 
-<valeur> ::= <scalair>
-           | <séquence>
-           | <mapping>
+<value> ::= <scalar>
+          | <sequence>
+          | <mapping>
 
-<séquence> ::= (<indentation> '-' <espace>? <valeur>? '\n')+
+<sequence> ::= (<indentation> '-' <space>? <value>? '\n')+
 
-<mapping> ::= (<clé_valeur>)+
+<mapping> ::= (<key_value>)+
 
-<scalair> ::= <chaîne>
-            | <nombre>
-            | <booléen>
-            | <null>
+<scalar> ::= <string>
+           | <number>
+           | <boolean>
+           | <null>
 
-<chaîne> ::= '"' [^"\n]* '"'          (* Chaîne entre guillemets doubles *)
-            | "'" [^'\n]* "'"         (* Chaîne entre guillemets simples *)
-            | [^\s:#\[\]\{\}][^\n#]*  (* Chaîne non encadrée *)
+<string> ::= '"' [^"\n]* '"'
+           | "'" [^'\n]* "'"
+           | [^\s:#\[\]\{\}][^\n#]*
 
-<nombre> ::= '-'? [0-9]+ ('.' [0-9]+)?
+<number> ::= '-'? [0-9]+ ('.' [0-9]+)?
 
-<booléen> ::= 'true' | 'false'
+<boolean> ::= 'true' | 'false'
 
 <null> ::= 'null' | '~'
 
-<espace> ::= ' ' | '\t'
+<space> ::= ' ' | '\t'
 
-<indentation> ::= (<espace>)*
+<indentation> ::= (<space>)*
 
-<texte> ::= [^\n]*
-
+<text> ::= [^\n]*
 ```
 
-### Explications :
+## Notes and Limitations
 
-- **<document>** : Représente un document YAML complet composé de zéro ou plusieurs éléments.
-  
-- **<élément>** : Peut être un commentaire, une paire clé-valeur, une séquence ou un mapping.
-  
-- **<commentaire>** : Une ligne commençant par `#` suivie de n'importe quel texte jusqu'à la fin de la ligne.
-  
-- **<clé_valeur>** : Une clé suivie de `:`, éventuellement suivie d'un espace et d'une valeur. La valeur peut être absente (dans le cas où une structure imbriquée suit).
-  
-- **<clé>** : Un scalaire représentant la clé dans une paire clé-valeur.
-  
-- **<valeur>** : Peut être un scalaire, une séquence ou un mapping.
-  
-- **<séquence>** : Une ou plusieurs lignes commençant par `-` (tiret), suivies d'une valeur optionnelle.
-  
-- **<mapping>** : Une ou plusieurs paires clé-valeur, potentiellement imbriquées en utilisant l'indentation.
-  
-- **<scalair>** : Une valeur scalaire qui peut être une chaîne, un nombre, un booléen ou null.
-  
-- **<chaîne>** : Peut être une chaîne entre guillemets simples ou doubles, ou une chaîne non encadrée sans caractères spéciaux.
-  
-- **<nombre>** : Un entier ou un nombre à virgule flottante, éventuellement précédé d'un signe moins.
-  
-- **<booléen>** : Les littéraux `true` ou `false`.
-  
-- **<null>** : Représente une valeur nulle, avec les littéraux `null` ou `~`.
-  
-- **<espace>** : Un espace ou une tabulation.
-  
-- **<indentation>** : Zéro ou plusieurs espaces ou tabulations, utilisé pour définir le niveau d'indentation.
-  
-- **<texte>** : N'importe quel caractère sauf un saut de ligne.
+- This is an educational parser, not a full YAML 1.2 implementation.
+- Indentation drives nesting, but advanced YAML features are not supported
+  (anchors, aliases, tags, multiline block scalars, flow collections, etc.).
+- Inline comments are removed by the tokenizer before parsing.
 
-### Notes Importantes :
+## Quick Test Cases
 
-- **Indentation** : L'indentation est significative en YAML. Les éléments imbriqués doivent être correctement indentés par rapport à leur parent. Le parseur utilise l'indentation pour déterminer la structure hiérarchique du document.
-  
-- **Commentaires** : Les commentaires commencent par `#` et s'étendent jusqu'à la fin de la ligne. Ils sont ignorés par le parseur.
-  
-- **Séquences** : Les séquences sont définies par des lignes commençant par `-` (tiret). Chaque élément de la séquence peut être un scalaire, un mapping ou une autre séquence.
-  
-- **Mappings** : Les mappings sont des collections de paires clé-valeur. Une clé est suivie de `:`, puis d'une valeur. Les mappings peuvent être imbriqués pour représenter des structures de données complexes.
-  
-- **Scalaires** : Les scalaires représentent des valeurs simples comme les chaînes de caractères, les nombres, les booléens et les valeurs nulles.
-  
-- **Chaînes Non Encadrées** : Les chaînes peuvent être non encadrées si elles ne contiennent pas d'espaces ou de caractères spéciaux tels que `:`, `#`, `[`, `]`, `{`, `}`.
+Simple key-value pair:
 
-### Exemples :
+```yaml
+name: "Alice"
+```
 
-1. **Paire Clé-Valeur Simple :**
+Scalar sequence:
 
-   ```yaml
-   nom: "Jino"
-   ```
+```yaml
+- Apple
+- Banana
+- Cherry
+```
 
-   - `<clé_valeur>` avec `<clé>` = `nom` et `<valeur>` = `"Alice"`
+Nested mapping:
 
-2. **Séquence de Scalaires :**
+```yaml
+person:
+  name: "John"
+  age: 25
+```
 
-   ```yaml
-   - Pomme
-   - Banane
-   - Cerise
-   ```
+Sequence of mappings:
 
-   - `<séquence>` de `<scalair>` non encadrés.
+```yaml
+- name: "Anna"
+  age: 30
+- name: "Bob"
+  age: 40
+```
 
-3. **Mapping Imbriqué :**
+## Contributing
 
-   ```yaml
-   personne:
-     nom: "John"
-     âge: 25
-   ```
+Contributions are welcome. Please open an issue first if you want to discuss a
+larger change.
 
-   - `<mapping>` où la `<clé>` est `personne` et la `<valeur>` est un autre `<mapping>` avec les paires `nom: "John"` et `âge: 25`.
+## License
 
-4. **Séquence de Mappings :**
-
-   ```yaml
-   - nom: "Johnny"
-     âge: 30
-   - nom: "Joe"
-     âge: 40
-   ```
-
-   - `<séquence>` dont chaque élément est un `<mapping>`.
+No license file is currently included. Add a `LICENSE` file before publishing if
+you want to explicitly allow reuse.
